@@ -6,6 +6,15 @@ An infinite region-based online pixel canvas, with server software written in C+
 
 ### Server
 
+#### Dependencies
+
+ - fmt
+ - spdlog
+ - Boost.Asio
+ - Boost.Beast
+
+You can use vcpkg in manifest mode to install these dependencies for you, or install them yourself.
+
 ```bash
 $ cmake -B build -DCMAKE_BUILD_TYPE=Release .
 $ cmake --build build
@@ -15,7 +24,7 @@ $ cmake --build build
 
 Alternatively, you can use Visual Studio or CLion to build the project.
 
-The output `pixelboard` executable can be placed wherever you want.
+The output `pixelboard` server executable can be placed wherever you want.
 
 ### Webapp
 

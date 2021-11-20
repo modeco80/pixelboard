@@ -1,0 +1,11 @@
+{
+  "name": "pixelboard",
+  "version-string": "1.0.0",
+
+  "dependencies": [
+    "fmt",
+    "spdlog",
+    "boost-asio",
+    "boost-beast"
+  ]
+}

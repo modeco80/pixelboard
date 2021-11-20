@@ -1,7 +1,10 @@
 
 .idea/
 # idea build dirs
-cmake-build-*
+cmake-build-*/
+
+# vcpkg install directory
+vcpkg_installed/
 
 # Web build dirs
 web/node_modules
