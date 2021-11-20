@@ -30,23 +30,22 @@ namespace pixelboard {
 			os.write(reinterpret_cast<const char*>(&thing), sizeof(T));
 		}
 
-		// this is a simple data header we serialize along with
-		// our bitmap data.
+		// This is a simple data header we serialize along with
+		// our bitmap data, mostly for verification purposes.
+
 		struct RegionDataHeader {
 			constexpr static auto VALID_MAGIC = UINT32_C(0x50425230); // 'PBR0'
 			std::uint32_t magic;									  // should be equal to VALID_MAGIC
 			std::uint16_t width;
 			std::uint16_t height;
-			// rgba8888 data follows.
+			// RGBA8888 data follows.
 		};
 
 	} // namespace
 
 	BoardRegion::BoardRegion(const RegionCoordinate& region)
 		: regionPos(region) {
-		// reset the color to white
-		// (probably slow lol but this is only done once)
-		memset(&pixelData[0], 0xFF, sizeof(pixelData));
+
 	}
 
 	void BoardRegion::LoadFile() {
@@ -85,6 +84,7 @@ namespace pixelboard {
 			.width = REGION_WIDTH,
 			.height = REGION_HEIGHT
 		};
+
 		std::ofstream ofs(path.string(), std::ofstream::binary);
 
 		if(!ofs) {
@@ -100,6 +100,10 @@ namespace pixelboard {
 		spdlog::info("Wrote region data to region file {}.", path.string());
 	}
 
+	void BoardRegion::Clear() {
+		memset(&pixelData[0], 0xFF, sizeof(pixelData));
+	}
+
 	void BoardRegion::PlotPixel(const PixelCoordinate& where, const Color& color) {
 		// some simple sanity checks always compiled in
 
@@ -109,7 +113,7 @@ namespace pixelboard {
 		if(where.y > REGION_HEIGHT)
 			return;
 
-		pixelData[REGION_WIDTH * where.y + where.x] = color;
+		pixelData[(REGION_WIDTH * where.y) + where.x] = color;
 	}
 
 	const RegionCoordinate& BoardRegion::GetCoordinate() const {

@@ -33,14 +33,19 @@ namespace pixelboard {
 		void SaveFile();
 
 		/**
-		 * Plot a single pixel onto this region
+		 * Clear this region to all-white
+		 */
+		void Clear();
+
+		/**
+		 * Plot a single pixel onto this region.
 		 *
 		 * \param[in] where Where on the region this pixel should be plotted
 		 * \param[in] color the color to plot
 		 */
 		void PlotPixel(const PixelCoordinate& where, const Color& color);
 
-		const RegionCoordinate& GetCoordinate() const;
+		[[nodiscard]] const RegionCoordinate& GetCoordinate() const;
 
 	   private:
 		RegionCoordinate regionPos;

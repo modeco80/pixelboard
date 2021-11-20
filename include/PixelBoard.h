@@ -19,26 +19,35 @@ namespace pixelboard {
 	 */
 	struct PixelBoard {
 		/**
-		 * Load all regions from the boards directory into memory.
+		 * Load all of the regions from the boards directory into memory,
+		 * registering them.
 		 */
 		void LoadRegions();
 
 		/**
-		 * Draw a pixel on the board. Will create a new board region if the board
-		 * coordinate is outside of any registered region.
+		 * Save all registered regions to disk.
+		 */
+		void SaveRegions();
+
+		/**
+		 * Draw a pixel on the board.
+		 *
+		 * Will create and register a new board region if
+		 * the board coordinate is outside of any registered region.
+		 *
+		 * \param[in] where Where to draw, in the board coordinate space.
+		 * \param[in] color The color of pixel to draw.
 		 */
 		void DrawPixel(const BoardCoordinate& where, const Color& color);
 
 	   private:
-		/**
-		 * Make a region
-		 */
+
 		std::shared_ptr<BoardRegion> MakeRegion(const RegionCoordinate& region);
 
-		std::optional<std::shared_ptr<BoardRegion>> GetRegion(const RegionCoordinate&);
+		std::optional<std::shared_ptr<BoardRegion>> GetRegion(const RegionCoordinate& coord);
 
 		/**
-		 * Regions.
+		 * All tracked board regions.
 		 */
 		std::vector<std::shared_ptr<BoardRegion>> regions;
 	};
