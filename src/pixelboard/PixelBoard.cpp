@@ -2,10 +2,10 @@
 // Created by lily on 11/19/2021.
 //
 
-#include <PixelBoard.h>
-#include <filesystem>
-
+#include <pixelboard/PixelBoard.h>
 #include <spdlog/spdlog.h>
+
+#include <filesystem>
 
 namespace pixelboard {
 
@@ -72,7 +72,8 @@ namespace pixelboard {
 		auto region_space = BoardToRegion(where);
 		auto region = GetRegion(region_space);
 
-		// If a region couldn't be found, make one
+		// If a region couldn't be found, make and register a region
+		// and clear it.
 		if(!region) {
 			region = MakeRegion(region_space);
 			(*region)->Clear();

@@ -2,6 +2,10 @@
 // Created by lily on 11/18/2021.
 //
 
+/**
+ * \file Fundamental PixelBoard core types.
+ */
+
 #ifndef PIXELBOARD_BOARDTYPES_H
 #define PIXELBOARD_BOARDTYPES_H
 
@@ -50,6 +54,8 @@ namespace pixelboard {
 	 */
 	using PixelCoordinate = BasicCoordinate<std::uint16_t>;
 
+	// CONSTANTS
+
 	/**
 	 * Region width.
 	 */
@@ -59,6 +65,8 @@ namespace pixelboard {
 	 * Region height.
 	 */
 	constexpr auto REGION_HEIGHT = 512;
+
+	// MISC. TYPES
 
 	/**
 	 * RGBA8888 color

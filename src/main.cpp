@@ -1,9 +1,8 @@
-#include <iostream>
-#include <filesystem>
-
+#include <pixelboard/PixelBoard.h>
 #include <spdlog/spdlog.h>
 
-#include <PixelBoard.h>
+#include <filesystem>
+#include <iostream>
 
 int main() {
 	pixelboard::PixelBoard board;

@@ -5,7 +5,7 @@
 #ifndef PIXELBOARD_PIXELBOARDREGION_H
 #define PIXELBOARD_PIXELBOARDREGION_H
 
-#include <BoardTypes.h>
+#include <pixelboard/BoardTypes.h>
 
 #include <array>
 

@@ -5,7 +5,8 @@
 #ifndef PIXELBOARD_PIXELBOARD_H
 #define PIXELBOARD_PIXELBOARD_H
 
-#include <BoardRegion.h>
+#include <pixelboard/BoardRegion.h>
+#include <pixelboard/BoardTypes.h>
 
 #include <memory>
 #include <optional>
@@ -13,9 +14,17 @@
 
 namespace pixelboard {
 
+	// Some potentional FIXME's:
+	//
+	// - Don't keep regions in memory if they aren't being used or written to?
+	//   (This would increase complexity a bit but allow me to tune the board types
+	//      to possibly 64-bit? It'd also GREATLY pull down the memory footprint)
+	//
+	// - Allow destroying region data? Sort of overlaps with the first point
+	//      but it'd probably not be the WORST idea I've ever had, right?
+
 	/**
-	 * The pixel board.
-	 * Does pixel board things, as you'd expect it to.
+	 * The infinite pixel board.
 	 */
 	struct PixelBoard {
 		/**
@@ -41,7 +50,6 @@ namespace pixelboard {
 		void DrawPixel(const BoardCoordinate& where, const Color& color);
 
 	   private:
-
 		std::shared_ptr<BoardRegion> MakeRegion(const RegionCoordinate& region);
 
 		std::optional<std::shared_ptr<BoardRegion>> GetRegion(const RegionCoordinate& coord);
