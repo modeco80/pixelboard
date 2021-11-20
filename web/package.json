@@ -1,0 +1,16 @@
+{
+  "name": "pixelboard-web",
+  "version": "1.0.0",
+  "description": "PixelBoard web frontend",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "modeco80",
+  "license": "ISC",
+  "devDependencies": {
+    "grunt": "^1.4.1",
+    "grunt-webpack": "^5.0.0",
+    "webpack": "^5.64.1"
+  }
+}

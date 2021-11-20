@@ -1,0 +1,8 @@
+
+.idea/
+# idea build dirs
+cmake-build-*
+
+# Web build dirs
+web/node_modules
+web/dist
