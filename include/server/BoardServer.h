@@ -22,7 +22,8 @@ namespace pixelboard {
 			enum class Kind {
 				SaveBoard,
 				DestroyBoard,
-				PlotPixel
+				PlotPixel,
+				SendChunks
 			} kind;
 
 			constexpr explicit BaseBoardThreadData(Kind kind)
@@ -33,7 +34,7 @@ namespace pixelboard {
 		};
 
 		/**
-		 * Trait template to avoid writing the same code a lot.
+		 * Trait template to avoid writing the same constructor for the same thing.
 		 */
 		template <BaseBoardThreadData::Kind kind>
 		struct BoardThreadData : public BaseBoardThreadData {
@@ -45,19 +46,27 @@ namespace pixelboard {
 		/**
 		 * Thread message to save the board.
 		 */
-		struct BoardSave : BoardThreadData<BaseBoardThreadData::Kind::SaveBoard> {};
+		struct ThreadSave : BoardThreadData<BaseBoardThreadData::Kind::SaveBoard> {};
 
 		/**
 		 * Thread message to destroy the board
 		 */
-		struct BoardDestroy : BoardThreadData<BaseBoardThreadData::Kind::DestroyBoard> {};
+		struct ThreadDestroy : BoardThreadData<BaseBoardThreadData::Kind::DestroyBoard> {};
 
 		/**
 		 * Thread message to plot a pixel on the board.
 		 */
-		struct BoardPlotPixel : BoardThreadData<BaseBoardThreadData::Kind::PlotPixel> {
+		struct ThreadPlotPixel : BoardThreadData<BaseBoardThreadData::Kind::PlotPixel> {
 			BoardCoordinate coord {};
 			Color color {};
+		};
+
+		/**
+		 * Thread message to send a region as chunks to a user.
+		 */
+		struct ThreadSendChunks : BoardThreadData<BaseBoardThreadData::Kind::SendChunks> {
+			RegionCoordinate region{};
+			// TODO: websocket::Client handle probably
 		};
 
 		/**

@@ -53,7 +53,7 @@ namespace pixelboard {
 
 	std::optional<std::shared_ptr<BoardRegion>> PixelBoard::GetRegion(const RegionCoordinate& coord) {
 		// Simple b-search.
-		// Shouldn't be too slow since theres about 4096 max possible regions.
+		// Shouldn't be too slow since there's about 4096 max possible regions.
 
 		for(auto& reg : regions)
 			if(reg->GetCoordinate() == coord)
