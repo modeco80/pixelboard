@@ -39,9 +39,9 @@ namespace pixelboard::websocket {
 
 		// types for handlers.
 		using Validate_t = std::function<void(std::shared_ptr<Client>)>;
-		using Open_t = std::function<void(std::shared_ptr<Client>)>;
-		using Close_t = std::function<void(std::shared_ptr<Client>)>;
-		using Message_t = std::function<void(std::shared_ptr<Client>, std::shared_ptr<const Message>)>;
+		using Open_t = std::function<void(std::weak_ptr<Client>)>;
+		using Close_t = std::function<void(std::weak_ptr<Client>)>;
+		using Message_t = std::function<void(std::weak_ptr<Client>, std::shared_ptr<const Message>)>;
 		// TODO: Http_t ?
 		//  that'd imply needing to export some http session stuff though..
 
@@ -54,6 +54,7 @@ namespace pixelboard::websocket {
 		void SetMessage(Message_t&&);
 
 		bool SendMessage(std::shared_ptr<Client> client, std::shared_ptr<const Message> message);
+
 
 	   protected:
 		Validate_t validate_handler;

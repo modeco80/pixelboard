@@ -3,9 +3,10 @@
 //
 
 #include <websocket/Server.h>
+
 #include <boost/asio/ip/tcp.hpp>
 
-#include "netts.h"
+#include "NetworkingTSCompatibility.h"
 
 namespace pixelboard::websocket {
 

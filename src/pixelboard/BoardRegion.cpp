@@ -32,6 +32,7 @@ namespace pixelboard {
 
 		// This is a simple data header we serialize along with
 		// our bitmap data, mostly for verification purposes.
+		// However, it also provides a magic and stuff.
 
 		struct RegionDataHeader {
 			constexpr static auto VALID_MAGIC = UINT32_C(0x50425230); // 'PBR0'
@@ -67,6 +68,9 @@ namespace pixelboard {
 			spdlog::error("Region file {} is not in valid format", path.string());
 			return;
 		}
+
+		// If the region isn't the right width or height,
+		// it won't make a proper grid.
 
 		if(rdh.width != REGION_WIDTH || rdh.height != REGION_HEIGHT) {
 			spdlog::error("Region file {} is not {}x{}", path.string(), REGION_WIDTH, REGION_HEIGHT);

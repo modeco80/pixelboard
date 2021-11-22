@@ -2,15 +2,13 @@
 // Created by lily on 11/20/2021.
 //
 
-// still don't need full definition of Server
+#include <spdlog/spdlog.h>
 #include <websocket/forward_decls.h>
 
 #include <boost/asio/dispatch.hpp>
 #include <boost/asio/io_context.hpp>
 #include <boost/asio/ip/address.hpp>
 #include <boost/asio/ip/tcp.hpp>
-#include <boost/asio/post.hpp>
-#include <boost/asio/strand.hpp>
 #include <boost/beast/core/bind_handler.hpp>
 #include <boost/beast/core/flat_buffer.hpp>
 #include <boost/beast/core/tcp_stream.hpp>
@@ -19,10 +17,8 @@
 #include <boost/beast/http/write.hpp>
 #include <boost/beast/websocket/rfc6455.hpp>
 
-#include "netts.h"
-
-
-#include <spdlog/spdlog.h>
+#include "HttpUtils.h"
+#include "NetworkingTSCompatibility.h"
 
 namespace pixelboard::websocket {
 
@@ -57,18 +53,16 @@ namespace pixelboard::websocket {
 				if(ec == http::error::end_of_stream)
 					return Close();
 
-				spdlog::info("HTTP request: {}", std::string_view(req.target().data(), req.target().length()));
+				spdlog::info("HTTP request: IP: {} Method: {} Target: {}", stream.socket().remote_endpoint().address().to_string(),http::to_string(req.method()), req.target());
 
 				if(beast::websocket::is_upgrade(req)) {
 					if(req.target() == "/") {
 						// Make websocket session
 					}
 
-					// TODO actually error out..
-
-					return Close();
 				} else {
 					http::response<http::string_body> res;
+					SetCommonResponseFields(res);
 
 					// nice little page
 					res.body() =
@@ -83,13 +77,12 @@ namespace pixelboard::websocket {
 					"</body>\r\n"
 					"</html>\r\n";
 
-					res.set(http::field::server, "Pixelboard");
 					res.set(http::field::content_type, "text/html");
 					res.result(http::status::ok);
 
 					// Put it into the response queue.
 					// The server will eventually get to it.
-					queue(std::move(res));
+					queue.Push(std::move(res));
 				}
 			}
 
@@ -103,7 +96,7 @@ namespace pixelboard::websocket {
 				if(shouldClose)
 					return Close();
 
-				// Notify the queue that a write has happened.
+				// Notify the queue that a write operation succeeded.
 				if(queue.OnWrite())
 					// If we can, read another request.
 					return DoRead();
@@ -131,8 +124,13 @@ namespace pixelboard::websocket {
 					return queue.size() >= MAX_ITEMS;
 				}
 
+				/**
+				 * Called when a HTTP response has been written to this session's stream.
+				 */
 				[[nodiscard]] bool OnWrite() {
 					const auto was_full = IsFull();
+
+					// Remove the work we just completed.
 					queue.erase(queue.begin());
 
 					// If there's more work, then execute that work.
@@ -142,20 +140,19 @@ namespace pixelboard::websocket {
 					return was_full;
 				}
 
-				template <bool request, class Body, class Fields>
-				void operator()(http::message<request, Body, Fields>&& message) {
+				template <class Body, class Fields>
+				void operator()(http::response<Body, Fields>&& message) {
 					// work implementation
 					struct MessageWorkImpl : public MessageWork {
 						HttpSession& self;
-						http::message<request, Body, Fields> msg;
+						http::response<Body, Fields> msg;
 
-						MessageWorkImpl(HttpSession& session, http::message<request, Body, Fields>&& msg)
+						MessageWorkImpl(HttpSession& session, http::response<Body, Fields>&& msg)
 							: self(session),
 							  msg(std::move(msg)) {
 						}
 
-						void
-						operator()() override {
+						void operator()() override {
 							http::async_write(self.stream, msg, beast::bind_front_handler(&HttpSession::OnWrite, self.shared_from_this(), msg.need_eof()));
 						}
 					};
@@ -168,21 +165,33 @@ namespace pixelboard::websocket {
 						(*queue.front())();
 				}
 
+				template <class Body, class Fields>
+				void Push(http::response<Body, Fields>&& message) {
+					return this->operator()(std::move(message));
+				}
+
 			   private:
-				// the max amount of responses we will buffer.
+
+				/**
+				 * The max amount of responses we will try to buffer.
+				 */
 				constexpr static auto MAX_ITEMS = 8;
 
+				/**
+				 * Type-erased base class for HTTP response work.
+				 * Holds the response until destroyed.
+				 */
 				struct MessageWork {
 					virtual ~MessageWork() = default;
 
 					/**
-					 * Writes the messaeg.
+					 * Writes the message.
 					 */
 					virtual void operator()() = 0;
 				};
 
 				HttpSession& self;
-				std::vector<std::unique_ptr<MessageWork> > queue;
+				std::vector<std::unique_ptr<MessageWork>> queue;
 			};
 
 			beast::tcp_stream stream;

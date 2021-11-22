@@ -7,6 +7,7 @@
 
 #include <pixelboard/PixelBoard.h>
 #include <server/WorkerThread.h>
+#include <websocket/Server.h>
 
 namespace pixelboard {
 
@@ -14,6 +15,9 @@ namespace pixelboard {
 	 * Board server.
 	 */
 	struct BoardServer {
+
+		void Run(const std::string& host, std::uint16_t port);
+
 	   private:
 		/**
   		 * Base class for worker thread data.
@@ -69,6 +73,9 @@ namespace pixelboard {
 			// TODO: websocket::Client handle probably
 		};
 
+
+		void BoardThreadProcessor(std::shared_ptr<BaseBoardThreadData> data);
+
 		/**
 		 * The pixelboard.
 		 */
@@ -79,6 +86,8 @@ namespace pixelboard {
 		 * All interaction with the pixelboard must happen here.
 		 */
 		WorkerThread<BaseBoardThreadData> boardThread;
+
+		std::shared_ptr<websocket::Server> server;
 	};
 
 } // namespace pixelboard

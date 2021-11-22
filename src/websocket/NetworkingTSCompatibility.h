@@ -12,8 +12,8 @@
 // Created by lily on 11/20/2021.
 //
 
-#ifndef PIXELBOARD_NETTS_H
-#define PIXELBOARD_NETTS_H
+#ifndef PIXELBOARD_NETWORKINGTSCOMPATIBILITY_H
+#define PIXELBOARD_NETWORKINGTSCOMPATIBILITY_H
 
 // Foward declare some stuff
 namespace boost::asio { // NOLINT (this namespace intentionally isn't asio::ip)
@@ -37,4 +37,4 @@ namespace beast = boost::beast;
 namespace http = beast::http;
 namespace websocket = beast::websocket;
 
-#endif //PIXELBOARD_NETTS_H
+#endif // PIXELBOARD_NETWORKINGTSCOMPATIBILITY_H

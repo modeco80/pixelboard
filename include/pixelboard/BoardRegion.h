@@ -50,6 +50,8 @@ namespace pixelboard {
 	   private:
 		RegionCoordinate regionPos;
 
+		// TODO: heap-allocate? this would avoid the Giant Class problem a bit
+
 		/**
 		 * Pixel data, in RGBA8888 format.
 		 */
