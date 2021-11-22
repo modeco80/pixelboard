@@ -6,8 +6,6 @@
 
 #include <boost/asio/ip/tcp.hpp>
 
-#include "NetworkingTSCompatibility.h"
-
 namespace pixelboard::websocket {
 
 	std::shared_ptr<detail::Listener> RunListener(net::io_context& ioc, tcp::endpoint&& ep, const std::shared_ptr<Server>& server);

@@ -2,6 +2,7 @@
 // Created by lily on 11/20/2021.
 //
 
+#include <fmt/core.h>
 #include <spdlog/spdlog.h>
 #include <websocket/forward_decls.h>
 
@@ -18,7 +19,7 @@
 #include <boost/beast/websocket/rfc6455.hpp>
 
 #include "HttpUtils.h"
-#include "NetworkingTSCompatibility.h"
+#include <websocket/NetworkingTSCompatibility.h>
 
 namespace pixelboard::websocket {
 
@@ -50,35 +51,43 @@ namespace pixelboard::websocket {
 			void OnRead(const boost::system::error_code& ec, std::size_t bytes_transferred) {
 				boost::ignore_unused(bytes_transferred);
 
+				// If the connection closed during read
+				// then close
 				if(ec == http::error::end_of_stream)
 					return Close();
-
-				spdlog::info("HTTP request: IP: {} Method: {} Target: {}", stream.socket().remote_endpoint().address().to_string(),http::to_string(req.method()), req.target());
 
 				if(beast::websocket::is_upgrade(req)) {
 					if(req.target() == "/") {
 						// Make websocket session
 					}
 
+					// Send a proper error out if the above condition isn't met.
+
+					http::response<http::string_body> res{http::status::bad_request, req.version()};
+					SetCommonResponseFields(res);
+					res.body() = "WebSocket connection needs to be at /.";
+					queue.Push(std::move(res));
 				} else {
-					http::response<http::string_body> res;
+					spdlog::info("[IP {}] HTTP {} {}", stream.socket().remote_endpoint().address().to_string(), http::to_string(req.method()), req.target());
+
+					http::response<http::string_body> res { http::status::ok, req.version() };
 					SetCommonResponseFields(res);
 
 					// nice little page
-					res.body() =
+					res.body() = fmt::format(
 					"<!DOCTYPE html>\r\n"
 					"<html>\r\n"
 					"<head>\r\n"
 					"   <title>Pixelboard backend</title>\r\n"
 					"</head>\r\n"
 					"<body>\r\n"
-					"   <h1>hello there :)</h1>\r\n"
-					"   <p>whatcha doin there?</p>\r\n"
+					"   <h1>PixelBoard Backend</h1>\r\n"
+					"   <p>There are no static pages here. Not even {}.</p>\r\n"
 					"</body>\r\n"
-					"</html>\r\n";
+					"</html>\r\n",
+					req.target());
 
 					res.set(http::field::content_type, "text/html");
-					res.result(http::status::ok);
 
 					// Put it into the response queue.
 					// The server will eventually get to it.
@@ -171,7 +180,6 @@ namespace pixelboard::websocket {
 				}
 
 			   private:
-
 				/**
 				 * The max amount of responses we will try to buffer.
 				 */

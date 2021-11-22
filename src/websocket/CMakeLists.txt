@@ -6,7 +6,7 @@ add_library(pixelboard_ws
 
 		Server.cpp
 		Listener.cpp
-		NetworkingTSCompatibility.h
+		${PROJECT_SOURCE_DIR}/include/websocket/NetworkingTSCompatibility.h
 		HttpSession.cpp
 		HttpUtils.h
 		${PROJECT_SOURCE_DIR}/include/websocket/Message.h

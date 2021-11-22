@@ -7,7 +7,7 @@
 
 #include <boost/beast/http/message.hpp>
 
-#include "NetworkingTSCompatibility.h"
+#include "websocket/NetworkingTSCompatibility.h"
 
 namespace pixelboard::websocket {
 

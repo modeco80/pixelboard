@@ -13,7 +13,7 @@
 #include <boost/asio/strand.hpp>
 #include <boost/beast/core/bind_handler.hpp>
 
-#include "NetworkingTSCompatibility.h"
+#include <websocket/NetworkingTSCompatibility.h>
 
 // forward decl of http session for prototype
 namespace pixelboard::websocket { // NOLINT

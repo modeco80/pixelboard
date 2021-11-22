@@ -14,6 +14,8 @@
 // to pull in some stuff we don't wanna
 #include <websocket/forward_decls.h>
 
+#include <websocket/NetworkingTSCompatibility.h>
+
 // (insert loyal pledge to kick the person who made windows
 // headers as garbage as they are here)
 #ifdef _WIN32
@@ -33,7 +35,7 @@ namespace pixelboard::websocket {
 		friend struct detail::Listener;
 		friend struct Client;
 
-		Server(boost::asio::io_context& ioc);
+		Server(net::io_context& ioc);
 
 		~Server();
 
@@ -63,7 +65,7 @@ namespace pixelboard::websocket {
 		Message_t message_handler;
 
 	   private:
-		boost::asio::io_context& ioc;
+		net::io_context& ioc;
 		std::shared_ptr<detail::Listener> listener;
 	};
 
