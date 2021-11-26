@@ -5,15 +5,14 @@
 #include <memory>
 
 // don't need the full definition of Server here.
-#include <websocket/forward_decls.h>
+#include <websocket/NetworkingTSCompatibility.h>
+#include <websocket/ForwardDeclarations.h>
 
 #include <boost/asio/io_context.hpp>
 #include <boost/asio/ip/address.hpp>
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/asio/strand.hpp>
 #include <boost/beast/core/bind_handler.hpp>
-
-#include <websocket/NetworkingTSCompatibility.h>
 
 // forward decl of http session for prototype
 namespace pixelboard::websocket { // NOLINT

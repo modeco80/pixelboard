@@ -5,9 +5,9 @@
 #ifndef PIXELBOARD_HTTPUTILS_H
 #define PIXELBOARD_HTTPUTILS_H
 
-#include <boost/beast/http/message.hpp>
+#include <websocket/NetworkingTSCompatibility.h>
 
-#include "websocket/NetworkingTSCompatibility.h"
+#include <boost/beast/http/message.hpp>
 
 namespace pixelboard::websocket {
 
@@ -19,7 +19,6 @@ namespace pixelboard::websocket {
 		res.set(http::field::server, "Pixelboard/0.1");
 	}
 
-
-}
+} // namespace pixelboard::websocket
 
 #endif // PIXELBOARD_HTTPUTILS_H

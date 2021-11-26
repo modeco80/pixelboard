@@ -6,8 +6,8 @@
 // Created by lily on 11/19/2021.
 //
 
-#ifndef PIXELBOARD_FORWARD_DECLS_H
-#define PIXELBOARD_FORWARD_DECLS_H
+#ifndef PIXELBOARD_FORWARDDECLARATIONS_H
+#define PIXELBOARD_FORWARDDECLARATIONS_H
 
 namespace pixelboard::websocket {
 	struct Server;
@@ -15,4 +15,4 @@ namespace pixelboard::websocket {
 	struct Message;
 } // namespace pixelboard::websocket
 
-#endif //PIXELBOARD_FORWARD_DECLS_H
+#endif // PIXELBOARD_FORWARDDECLARATIONS_H

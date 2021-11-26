@@ -3,6 +3,7 @@
 //
 
 #include <websocket/Server.h>
+#include <websocket/Client.h>
 
 #include <boost/asio/ip/tcp.hpp>
 
@@ -12,7 +13,6 @@ namespace pixelboard::websocket {
 
 	Server::Server(net::io_context& ioc)
 		: ioc(ioc) {
-
 	}
 
 	Server::~Server() {
@@ -27,4 +27,33 @@ namespace pixelboard::websocket {
 		if(listener)
 			listener.reset();
 	}
-}
+
+	void Server::SetValidate(Validate_t&& validate) {
+		validate_handler = std::move(validate);
+	}
+
+	void Server::SetOpen(Open_t&& open) {
+		open_handler = std::move(open);
+	}
+
+	void Server::SetMessage(Message_t&& message) {
+		message_handler = std::move(message);
+	}
+
+	void Server::SetClose(Close_t&& close) {
+		close_handler = std::move(close);
+	}
+
+	bool Server::SendMessage(std::weak_ptr<Client> client, std::shared_ptr<const Message> message) {
+		try {
+			if(auto sp = client.lock()) {
+				sp->Send(message);
+				return true;
+			}
+		} catch(...) {
+			return false;
+		}
+
+		return false;
+	}
+} // namespace pixelboard::websocket

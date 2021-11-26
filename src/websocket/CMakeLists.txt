@@ -10,8 +10,7 @@ add_library(pixelboard_ws
 		HttpSession.cpp
 		HttpUtils.h
 		${PROJECT_SOURCE_DIR}/include/websocket/Message.h
-
-)
+		${PROJECT_SOURCE_DIR}/include/websocket/Client.h Client.cpp Message.cpp)
 
 target_include_directories(pixelboard_ws PUBLIC ${PROJECT_SOURCE_DIR}/include)
 target_link_libraries(pixelboard_ws PRIVATE fmt::fmt spdlog::spdlog Boost::system)

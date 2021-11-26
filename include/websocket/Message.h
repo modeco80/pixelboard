@@ -8,6 +8,8 @@
 #include <cstdint>
 #include <vector>
 #include <memory>
+#include <span>
+#include <string_view>
 
 namespace pixelboard::websocket {
 
@@ -21,28 +23,51 @@ namespace pixelboard::websocket {
 			Binary
 		};
 
+		// trivial-ctor
 		Message() = default;
 
 		/**
-		 * Move constructor.
-		 * Invalidates moving message
-		 * and makes this one own the buffer.
+		 * Constructor for creating a text WebSocket message.
+		 *
+		 * \param[in] sv string_view to pass in
 		 */
-		Message(Message&& move);
+		explicit Message(std::string_view sv);
 
 		/**
-		 * Copy constructor.
-		 * Internally triggers shared_ptr<> copy.
+		 * Constructor for creating a binary WebSocket message.
+		 *
+		 * \param sp Span to pass in
 		 */
-		Message(const Message& copy);
-
+		explicit Message(std::span<std::uint8_t> sp);
 
 		Message& operator=(const Message& other);
 
+		/**
+		 * Get the type of this message.
+		 */
+		[[nodiscard]] Type GetType() const;
+
+		/**
+		 * Gets the content of this Message as a string,
+		 * if applicable (type == Type::String).
+		 *
+		 * Asserts the above condition.
+		 */
+		[[nodiscard]] std::string_view GetString() const;
+
+		/**
+		 * Get the content of this Message as a span<const uint8_t>,
+		 * if applicable (type == Type::Binary).
+		 *
+		 * Asserts the above condition.
+		 */
+		[[nodiscard]] std::span<const std::uint8_t> GetBinary() const;
 
 	   private:
+		friend struct Client; // Client can access internal implementation details
+
 		Type type{};
-		std::shared_ptr<std::vector<std::uint8_t>> data_buffer;
+		std::vector<std::uint8_t> data_buffer;
 	};
 
 }

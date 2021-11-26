@@ -4,7 +4,8 @@
 
 #include <fmt/core.h>
 #include <spdlog/spdlog.h>
-#include <websocket/forward_decls.h>
+#include <websocket/NetworkingTSCompatibility.h>
+#include <websocket/ForwardDeclarations.h>
 
 #include <boost/asio/dispatch.hpp>
 #include <boost/asio/io_context.hpp>
@@ -19,7 +20,9 @@
 #include <boost/beast/websocket/rfc6455.hpp>
 
 #include "HttpUtils.h"
-#include <websocket/NetworkingTSCompatibility.h>
+
+// I'm so sorry :(
+#include <websocket/Client.h>
 
 namespace pixelboard::websocket {
 
@@ -58,12 +61,13 @@ namespace pixelboard::websocket {
 
 				if(beast::websocket::is_upgrade(req)) {
 					if(req.target() == "/") {
-						// Make websocket session
+						std::make_shared<websocket::Client>(std::move(stream.release_socket()), server)->Run(std::move(req));
+						return;
 					}
 
 					// Send a proper error out if the above condition isn't met.
 
-					http::response<http::string_body> res{http::status::bad_request, req.version()};
+					http::response<http::string_body> res { http::status::bad_request, req.version() };
 					SetCommonResponseFields(res);
 					res.body() = "WebSocket connection needs to be at /.";
 					queue.Push(std::move(res));

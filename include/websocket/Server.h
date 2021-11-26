@@ -12,7 +12,7 @@
 #include <string>
 
 // to pull in some stuff we don't wanna
-#include <websocket/forward_decls.h>
+#include <websocket/ForwardDeclarations.h>
 
 #include <websocket/NetworkingTSCompatibility.h>
 
@@ -23,6 +23,9 @@
 		#undef SendMessage
 	#endif
 #endif
+
+// whatever I give up - fully define Client here
+#include <websocket/Client.h>
 
 namespace pixelboard::websocket {
 
@@ -35,12 +38,12 @@ namespace pixelboard::websocket {
 		friend struct detail::Listener;
 		friend struct Client;
 
-		Server(net::io_context& ioc);
+		explicit Server(net::io_context& ioc);
 
 		~Server();
 
 		// types for handlers.
-		using Validate_t = std::function<void(std::shared_ptr<Client>)>;
+		using Validate_t = std::function<bool(std::weak_ptr<Client>)>; // true == allow connection, false == close.
 		using Open_t = std::function<void(std::weak_ptr<Client>)>;
 		using Close_t = std::function<void(std::weak_ptr<Client>)>;
 		using Message_t = std::function<void(std::weak_ptr<Client>, std::shared_ptr<const Message>)>;
@@ -55,7 +58,7 @@ namespace pixelboard::websocket {
 		void SetClose(Close_t&&);
 		void SetMessage(Message_t&&);
 
-		bool SendMessage(std::shared_ptr<Client> client, std::shared_ptr<const Message> message);
+		bool SendMessage(std::weak_ptr<Client> client, std::shared_ptr<const Message> message);
 
 
 	   protected:
